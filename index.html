@@ -13,7 +13,8 @@
   @media (max-width:860px){.wrap{grid-template-columns:1fr}}
   .card{background:linear-gradient(180deg,#fff,#fff4fb);border-radius:14px;padding:16px;box-shadow:0 10px 28px rgba(111,38,80,.06);border:1px solid rgba(255,90,150,.06)}
   h1{margin:0 0 8px;color:#66203a;font-size:20px}
-  .pickup{background:linear-gradient(90deg, rgba(255,90,167,.06), transparent); padding:10px;border-radius:10px;margin-bottom:12px;color:#5a2140;display:none}
+  /* pickup hidden by default, shown only when Yes clicked */
+  .pickup{background:linear-gradient(90deg, rgba(255,90,167,.06), transparent); padding:10px;border-radius:10px;margin-bottom:30px;color:#5a2140;display:none}
   .controls{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
   .btn{cursor:pointer;border-radius:12px;border:0;padding:12px 16px;font-weight:800;box-shadow:0 6px 18px rgba(111,38,80,.06);transition:transform .12s ease}
   .btn:active{transform:translateY(2px)}
@@ -40,6 +41,7 @@
       <div class="card" style="padding:12px">
         <div id="shortLine" style="margin-bottom:10px;font-size:15px;color:#6b4053">I have a small, no-pressure invite for you.</div>
 
+        <!-- pickup is hidden initially -->
         <div id="pickup" class="pickup">
           Jab se tumhari nazar mili hai, lagta hai waqt ruk gaya hai. Kya tum mujhe kuch aur pal dogi, taaki hum iss rukey huey waqt ko saath mein jee sakein? Coffee ke liye?
         </div>
@@ -55,9 +57,9 @@
         </div>
 
         <div class="audio-controls" id="audioControls" aria-hidden="false" style="margin-top:10px">
-          <!-- Use the local path you uploaded; the hosting will translate this path -->
+          <!-- When you upload the MP3 to your repo root, change the src to "./<your-file-name>.mp3" -->
           <audio id="bgAudio" preload="none">
-            <source src="/mnt/data/Dooron Dooron Unplugged Karaoke With Lyrics  Paresh Pahuja  DarkSun Production.mp3" type="audio/mpeg">
+            <source src="./Dooron Dooron Unplugged Karaoke With Lyrics  Paresh Pahuja  DarkSun Production.mp3" type="audio/mpeg">
             Your browser does not support audio.
           </audio>
           <button id="playToggle" class="audio-btn">Play music</button>
@@ -74,8 +76,8 @@
       <h2 id="previewHeading" style="margin:0;color:#66203a">Live preview</h2>
       <div id="statusText" style="font-size:15px;color:#6b4053">Will you say yes, Sakshi?</div>
 
-      <!-- Updated dancing cat GIF -->
-      <img id="catGif" src="https://media.giphy.com/media/mlvseq9yvZhba/giphy.gif" alt="dancing cat">
+      <!-- happy dancing cat GIF (visible after Yes) -->
+      <img id="catGif" src="https://media.giphy.com/media/mlvseq9yvZhba/giphy.gif" alt="happy dancing cat">
 
       <div id="celebrateText" class="celebrate" aria-hidden="true"></div>
 
@@ -146,7 +148,7 @@
 
   noBtn.addEventListener('touchstart', ()=> randomMoveNo(), {passive:true});
 
-  noBtn.addEventListener('click', ()=>{
+  noBtn.addEventListener('click', ()=> {
     noCount++;
     noCountEl.textContent = noCount;
     randomMoveNo();
@@ -158,7 +160,7 @@
   });
 
   // play/pause button for audio (manual control)
-  playToggle.addEventListener('click', async ()=>{
+  playToggle.addEventListener('click', async ()=> {
     if(bgAudio.paused){
       try{
         bgAudio.currentTime = 0;
@@ -174,8 +176,8 @@
   });
 
   // Yes click - reveal pickup, play music, cat, confetti
-  yesBtn.addEventListener('click', async ()=>{
-    // reveal pickup (only on yes)
+  yesBtn.addEventListener('click', async ()=> {
+    // reveal the pickup line now
     pickupEl.style.display = 'block';
 
     statusText.textContent = "She said YES! Let's celebrate 🎉";
@@ -200,7 +202,7 @@
     fireConfetti(22);
   });
 
-  copyBtn.addEventListener('click', async ()=>{
+  copyBtn.addEventListener('click', async ()=> {
     const invite = `Sakshi,\n\nJab se tumhari nazar mili hai, lagta hai waqt ruk gaya hai. Kya tum mujhe kuch aur pal dogi, taaki hum iss rukey huey waqt ko saath mein jee sakein? Coffee ke liye?\n\n— (from me)`;
     try{ await navigator.clipboard.writeText(invite); copyBtn.textContent='Copied!'; setTimeout(()=>copyBtn.textContent='Copy invite text',1400);}catch(e){ alert('Copy failed — select and copy manually:\n\n' + invite); }
   });
@@ -229,7 +231,7 @@
   });
 
   // initial small random placement
-  window.addEventListener('load', ()=>{
+  window.addEventListener('load', ()=> {
     const area = noArea.getBoundingClientRect();
     const btn = noBtn.getBoundingClientRect();
     if(area.width > btn.width + 4 && area.height > btn.height + 4){
