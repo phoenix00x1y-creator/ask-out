@@ -4,242 +4,167 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Sakshi — a small invite</title>
+
 <style>
   :root{--bg1:#ffeef8;--bg2:#ffd4ec;--accent:#ff5aa7;--muted:#6b3b55}
   *{box-sizing:border-box}
   html,body{height:100%;margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial}
-  body{background:radial-gradient(circle at 10% 10%, #fff0f9 0%, var(--bg1) 40%, var(--bg2) 100%);color:var(--muted);padding:18px;display:flex;justify-content:center}
-  .wrap{width:100%;max-width:980px;display:grid;grid-template-columns:1fr 380px;gap:18px}
+  body{
+    background:radial-gradient(circle at 10% 10%, #fff0f9 0%, var(--bg1) 40%, var(--bg2) 100%);
+    color:var(--muted);
+    padding:18px;
+    display:flex;
+    justify-content:center;
+  }
+  .wrap{width:100%;max-width:900px;display:grid;grid-template-columns:1fr 340px;gap:18px}
   @media (max-width:860px){.wrap{grid-template-columns:1fr}}
-  .card{background:linear-gradient(180deg,#fff,#fff4fb);border-radius:14px;padding:16px;box-shadow:0 10px 28px rgba(111,38,80,.06);border:1px solid rgba(255,90,150,.06)}
-  h1{margin:0 0 8px;color:#66203a;font-size:20px}
-  /* pickup hidden by default, shown only when Yes clicked */
-  .pickup{background:linear-gradient(90deg, rgba(255,90,167,.06), transparent); padding:10px;border-radius:10px;margin-bottom:30px;color:#5a2140;display:none}
+  .card{
+    background:linear-gradient(180deg,#fff,#fff4fb);
+    border-radius:14px;
+    padding:16px;
+    box-shadow:0 10px 28px rgba(111,38,80,.06);
+    border:1px solid rgba(255,90,150,.06)
+  }
+  h1{margin:0 0 8px;color:#66203a;font-size:22px}
+
+  /* hidden pickup line until YES */
+  .pickup{
+    background:linear-gradient(90deg, rgba(255,90,167,.06), transparent);
+    padding:10px;
+    border-radius:10px;
+    margin-bottom:20px;
+    display:none;
+    color:#5a2140;
+  }
+
   .controls{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
-  .btn{cursor:pointer;border-radius:12px;border:0;padding:12px 16px;font-weight:800;box-shadow:0 6px 18px rgba(111,38,80,.06);transition:transform .12s ease}
-  .btn:active{transform:translateY(2px)}
-  .btn-yes{background:linear-gradient(90deg,var(--accent),#ff8bbf);color:white;min-width:120px;font-size:16px;transform-origin:center center}
-  .btn-no{background:transparent;border:2px solid rgba(106,21,57,.12);color:#6d1938;min-width:120px;font-size:16px}
-  @media (max-width:520px){.controls{flex-direction:column;align-items:stretch}.btn{width:100%;min-width:0;font-size:18px;padding:14px}}
-  .btn-area{position:relative; display:inline-block; min-width:120px; height:48px}
-  #noBtn{position:absolute; left:0; top:0; touch-action:none}
-  .preview{display:flex;flex-direction:column;align-items:center;padding:12px;border-radius:12px;gap:10px}
-  #catGif{max-width:100%;height:auto;display:none;border-radius:12px}
-  .celebrate{color:var(--accent);font-weight:800}
-  .counter{display:inline-block;background:#fff;border:1px solid rgba(255,90,150,.16);padding:6px 10px;border-radius:999px;font-weight:800;margin-left:8px}
-  .confetti-piece{position:fixed;width:10px;height:14px;pointer-events:none;mix-blend-mode:screen;z-index:9999;border-radius:2px}
-  .audio-controls{display:flex;gap:10px;align-items:center;margin-top:8px}
-  .audio-btn{background:transparent;border:1px solid rgba(106,21,57,.12);padding:8px 10px;border-radius:10px;font-weight:700}
-  .note{font-size:13px;color:#6b4158;margin-top:8px;text-align:center}
+  .btn{cursor:pointer;border-radius:12px;border:0;padding:12px 16px;font-weight:800;transition:transform .12s ease}
+  .btn-yes{background:linear-gradient(90deg,var(--accent),#ff8bbf);color:white;min-width:120px}
+  .btn-no{background:transparent;border:2px solid rgba(106,21,57,.12);color:#6d1938;min-width:120px}
+
+  .btn-area{position:relative; min-width:120px; height:48px}
+  #noBtn{position:absolute; left:0; top:0}
+
+  #catGif{
+    max-width:100%;
+    height:auto;
+    display:none;
+    border-radius:12px;
+  }
+  .celebrate{color:var(--accent);font-weight:800;margin-top:10px}
+  .confetti-piece{
+    position:fixed;width:10px;height:14px;pointer-events:none;z-index:9999;border-radius:2px
+  }
 </style>
 </head>
+
 <body>
-  <main class="wrap" role="main" aria-labelledby="title">
-    <section class="card" aria-labelledby="title">
-      <h1 id="title">Sakshi — can I take you out?</h1>
+<main class="wrap">
+  <section class="card">
+    <h1>Sakshi — can I take you out?</h1>
 
-      <div class="card" style="padding:12px">
-        <div id="shortLine" style="margin-bottom:10px;font-size:15px;color:#6b4053">I have a small, no-pressure invite for you.</div>
+    <p id="shortLine">I have a small, no-pressure invite for you.</p>
 
-        <!-- pickup is hidden initially -->
-        <div id="pickup" class="pickup">
-          Jab se tumhari nazar mili hai, lagta hai waqt ruk gaya hai. Kya tum mujhe kuch aur pal dogi, taaki hum iss rukey huey waqt ko saath mein jee sakein? Coffee ke liye?
-        </div>
+    <!-- hidden until YES -->
+    <div id="pickup" class="pickup">
+      Jab se tumhari nazar mili hai, lagta hai waqt ruk gaya hai.  
+      Kya tum mujhe kuch aur pal dogi, taaki hum iss rukey huey waqt ko saath mein jee sakein?  
+      Coffee ke liye? ☕💖
+    </div>
 
-        <div class="controls" aria-hidden="false">
-          <button id="yesBtn" class="btn btn-yes" aria-pressed="false">Yes ❤️</button>
+    <div class="controls">
+      <button id="yesBtn" class="btn btn-yes">Yes ❤️</button>
 
-          <div class="btn-area" id="noArea" title="Choose carefully">
-            <button id="noBtn" class="btn btn-no" type="button">No</button>
-          </div>
-
-          <div class="counter" id="noCount" title="No clicks">0</div>
-        </div>
-
-        <div class="audio-controls" id="audioControls" aria-hidden="false" style="margin-top:10px">
-          <!-- When you upload the MP3 to your repo root, change the src to "./<your-file-name>.mp3" -->
-          <audio id="bgAudio" preload="none">
-            <source src="./Dooron Dooron Unplugged Karaoke With Lyrics  Paresh Pahuja  DarkSun Production.mp3" type="audio/mpeg">
-            Your browser does not support audio.
-          </audio>
-          <button id="playToggle" class="audio-btn">Play music</button>
-          <div style="font-size:13px;color:#6b4053">Tap Play (or press Yes) to start music — some phones block autoplay.</div>
-        </div>
-
-        <div style="margin-top:12px;font-size:13px;color:#7b465f">If you'd prefer a different time/place, say it — and if not, that's okay.</div>
+      <div id="noArea" class="btn-area">
+        <button id="noBtn" class="btn btn-no">No</button>
       </div>
+    </div>
 
-      <div class="note">This page runs locally in your browser. If you want it hosted, I can help publish it to your GitHub Pages.</div>
-    </section>
+    <audio id="bgAudio" preload="auto">
+      <source src="music.mp3" type="audio/mpeg">
+    </audio>
 
-    <aside class="card preview" aria-labelledby="previewHeading">
-      <h2 id="previewHeading" style="margin:0;color:#66203a">Live preview</h2>
-      <div id="statusText" style="font-size:15px;color:#6b4053">Will you say yes, Sakshi?</div>
+  </section>
 
-      <!-- happy dancing cat GIF (visible after Yes) -->
-      <img id="catGif" src="https://media.giphy.com/media/mlvseq9yvZhba/giphy.gif" alt="happy dancing cat">
+  <aside class="card">
+    <h3 style="margin:0;color:#66203a">Preview</h3>
+    <div id="statusText">Will you say yes, Sakshi?</div>
 
-      <div id="celebrateText" class="celebrate" aria-hidden="true"></div>
+    <!-- YOUR NEW GIF HERE -->
+    <img id="catGif" src="./peach-goma-peach-and-goma.gif" alt="happy dancing cat">
 
-      <a id="gifDownload" href="https://media.giphy.com/media/mlvseq9yvZhba/giphy.gif" download class="audio-btn" style="display:none;text-decoration:none;margin-top:6px">Download the dancing cat GIF</a>
-
-      <button id="copyBtn" class="audio-btn" style="margin-top:8px">Copy invite text</button>
-    </aside>
-  </main>
+    <div id="celebrateText" class="celebrate"></div>
+  </aside>
+</main>
 
 <script>
-  // elements
-  const yesBtn = document.getElementById('yesBtn');
-  const noBtn = document.getElementById('noBtn');
-  const noArea = document.getElementById('noArea');
-  const noCountEl = document.getElementById('noCount');
-  const pickupEl = document.getElementById('pickup');
-  const statusText = document.getElementById('statusText');
-  const catGif = document.getElementById('catGif');
-  const celebrateText = document.getElementById('celebrateText');
-  const gifDownload = document.getElementById('gifDownload');
-  const copyBtn = document.getElementById('copyBtn');
-  const bgAudio = document.getElementById('bgAudio');
-  const playToggle = document.getElementById('playToggle');
+const yesBtn = document.getElementById("yesBtn");
+const noBtn = document.getElementById("noBtn");
+const noArea = document.getElementById("noArea");
+const pickup = document.getElementById("pickup");
+const catGif = document.getElementById("catGif");
+const statusText = document.getElementById("statusText");
+const celebrateText = document.getElementById("celebrateText");
+const bgAudio = document.getElementById("bgAudio");
 
-  let noCount = 0;
-  let yesScale = 1;
+let yesScale = 1;
 
-  function rand(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
-  function clamp(v,a,b){ return Math.max(a, Math.min(b, v)); }
+function rand(a,b){return Math.floor(Math.random()*(b-a+1))+a;}
 
-  // random move for No button (on click)
-  function randomMoveNo(){
-    const area = noArea.getBoundingClientRect();
-    const btn = noBtn.getBoundingClientRect();
-    const maxLeft = Math.max(0, area.width - btn.width);
-    const maxTop  = Math.max(0, area.height - btn.height);
-    const left = rand(0, Math.floor(maxLeft));
-    const top  = rand(0, Math.floor(maxTop));
-    noBtn.style.left = left + 'px';
-    noBtn.style.top  = top  + 'px';
+function moveNo() {
+  const area = noArea.getBoundingClientRect();
+  const btn = noBtn.getBoundingClientRect();
+  const x = rand(0, area.width - btn.width);
+  const y = rand(0, area.height - btn.height);
+  noBtn.style.left = x + "px";
+  noBtn.style.top = y + "px";
+}
+
+noBtn.addEventListener("click", () => {
+  moveNo();
+  statusText.textContent = "You clicked No — Yes is getting bigger 😉";
+  yesScale += 0.15;
+  yesBtn.style.transform = `scale(${yesScale})`;
+});
+
+yesBtn.addEventListener("click", async () => {
+  pickup.style.display = "block";
+  catGif.style.display = "block";
+  statusText.textContent = "She said YES! 🎉";
+  celebrateText.textContent = "Coffee date confirmed! ☕💖";
+
+  try {
+    bgAudio.currentTime = 0;
+    await bgAudio.play();
+  } catch(e) {
+    console.log("Autoplay blocked");
   }
 
-  // dodge on pointer near
-  function distance(x1,y1,x2,y2){ return Math.hypot(x2-x1, y2-y1); }
-  document.addEventListener('pointermove', (e)=>{
-    const btnRect = noBtn.getBoundingClientRect();
-    const centerX = btnRect.left + btnRect.width/2;
-    const centerY = btnRect.top + btnRect.height/2;
-    const dist = distance(e.clientX, e.clientY, centerX, centerY);
-    const threshold = Math.max(60, btnRect.width + 10);
-    if(dist < threshold){
-      const area = noArea.getBoundingClientRect();
-      if(area.width <= btnRect.width + 4 || area.height <= btnRect.height + 4){
-        noBtn.style.left = (rand(0, Math.max(0, area.width - btnRect.width))) + 'px';
-        noBtn.style.top  = (rand(0, Math.max(0, area.height - btnRect.height))) + 'px';
-        return;
-      }
-      const relX = clamp(e.clientX - area.left, 0, area.width);
-      const relY = clamp(e.clientY - area.top, 0, area.height);
-      let targetX = area.width - relX - btnRect.width/2 + (Math.random()*40 - 20);
-      let targetY = area.height - relY - btnRect.height/2 + (Math.random()*30 - 15);
-      targetX = clamp(targetX, 0, area.width - btnRect.width);
-      targetY = clamp(targetY, 0, area.height - btnRect.height);
-      noBtn.style.left = targetX + 'px';
-      noBtn.style.top  = targetY + 'px';
-    }
-  });
+  fireConfetti(25);
+});
 
-  noBtn.addEventListener('touchstart', ()=> randomMoveNo(), {passive:true});
+document.addEventListener("pointermove", e => {
+  const rect = noBtn.getBoundingClientRect();
+  const dist = Math.hypot(e.clientX - (rect.left + rect.width/2), e.clientY - (rect.top + rect.height/2));
+  if (dist < 60) moveNo();
+});
 
-  noBtn.addEventListener('click', ()=> {
-    noCount++;
-    noCountEl.textContent = noCount;
-    randomMoveNo();
-    yesScale += 0.12;
-    yesBtn.style.transform = `scale(${yesScale})`;
-    statusText.textContent = "You clicked No — the 'Yes' is growing a little 😉";
-    yesBtn.animate([{ transform: `scale(${yesScale})` }, { transform: `scale(${yesScale + 0.08})` }, { transform: `scale(${yesScale})` }], { duration: 420 });
-    noBtn.animate([{ transform: 'translateX(0)'}, { transform: 'translateX(8px)'}, { transform: 'translateX(0)'}], { duration: 260 });
-  });
-
-  // play/pause button for audio (manual control)
-  playToggle.addEventListener('click', async ()=> {
-    if(bgAudio.paused){
-      try{
-        bgAudio.currentTime = 0;
-        await bgAudio.play();
-        playToggle.textContent = 'Pause music';
-      }catch(err){
-        alert('Autoplay blocked. Press the Yes button (a gesture) or tap Play again.');
-      }
-    } else {
-      bgAudio.pause();
-      playToggle.textContent = 'Play music';
-    }
-  });
-
-  // Yes click - reveal pickup, play music, cat, confetti
-  yesBtn.addEventListener('click', async ()=> {
-    // reveal the pickup line now
-    pickupEl.style.display = 'block';
-
-    statusText.textContent = "She said YES! Let's celebrate 🎉";
-    celebrateText.textContent = "Yay! Coffee it is ☕️💖";
-    celebrateText.setAttribute('aria-hidden','false');
-
-    catGif.style.display = 'block';
-    gifDownload.style.display = 'inline-block';
-
-    // attempt play - user gesture from click should allow it
-    try{
-      bgAudio.currentTime = 0;
-      await bgAudio.play();
-      playToggle.textContent = 'Pause music';
-    }catch(err){
-      // fallback: tell user to tap Play
-      playToggle.textContent = 'Play music';
-      console.warn('audio play failed:', err);
-    }
-
-    yesBtn.animate([{ transform: yesBtn.style.transform || 'scale(1)'}, { transform: `scale(${(yesScale||1)+0.18})` }, { transform: yesBtn.style.transform || 'scale(1)'}], { duration: 700 });
-    fireConfetti(22);
-  });
-
-  copyBtn.addEventListener('click', async ()=> {
-    const invite = `Sakshi,\n\nJab se tumhari nazar mili hai, lagta hai waqt ruk gaya hai. Kya tum mujhe kuch aur pal dogi, taaki hum iss rukey huey waqt ko saath mein jee sakein? Coffee ke liye?\n\n— (from me)`;
-    try{ await navigator.clipboard.writeText(invite); copyBtn.textContent='Copied!'; setTimeout(()=>copyBtn.textContent='Copy invite text',1400);}catch(e){ alert('Copy failed — select and copy manually:\n\n' + invite); }
-  });
-
-  function fireConfetti(n){
-    for(let i=0;i<n;i++){
-      const c = document.createElement('div');
-      c.className = 'confetti-piece';
-      c.style.left = (window.innerWidth/2 + rand(-220,220)) + 'px';
-      c.style.top  = '-10px';
-      c.style.background = `hsl(${rand(320,360)}, 80%, ${rand(50,68)}%)`;
-      document.body.appendChild(c);
-      const anim = c.animate([
-        { transform: `translateY(-20vh) rotate(${rand(0,360)}deg)`, opacity:1 },
-        { transform: `translateY(${rand(40,120)}vh) rotate(${rand(360,720)}deg)`, opacity:1 },
-        { transform: `translateY(${rand(120,200)}vh) rotate(${rand(720,1080)}deg)`, opacity:0 }
-      ], { duration: rand(1400,2600), easing:'cubic-bezier(.2,.7,.1,1)'});
-      anim.onfinish = ()=> c.remove();
-    }
+function fireConfetti(n){
+  for(let i=0;i<n;i++){
+    const c = document.createElement("div");
+    c.className = "confetti-piece";
+    c.style.left = (window.innerWidth/2 + rand(-180,180)) + "px";
+    c.style.top = "-10px";
+    c.style.background = `hsl(${rand(320,360)},80%,${rand(50,70)}%)`;
+    document.body.appendChild(c);
+    c.animate([
+      {transform:`translateY(0) rotate(0deg)`,opacity:1},
+      {transform:`translateY(${rand(200,400)}px) rotate(${rand(360,720)}deg)`,opacity:0}
+    ], {duration:rand(1000,1800),easing:"ease-out"})
+    .onfinish = ()=> c.remove();
   }
-
-  // keyboard dev helpers
-  document.addEventListener('keydown', e=>{
-    if(e.key==='y' || e.key==='Y') yesBtn.click();
-    if(e.key==='n' || e.key==='N') noBtn.click();
-  });
-
-  // initial small random placement
-  window.addEventListener('load', ()=> {
-    const area = noArea.getBoundingClientRect();
-    const btn = noBtn.getBoundingClientRect();
-    if(area.width > btn.width + 4 && area.height > btn.height + 4){
-      noBtn.style.left = Math.floor(area.width/4) + 'px';
-      noBtn.style.top  = Math.floor(area.height/4) + 'px';
-    }
-    statusText.textContent = "Hi Sakshi — just a sweet, low-pressure invite.";
-  });
+}
 </script>
+
 </body>
 </html>
